@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0F6E56">
+  <title>Registro de Viajes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --verde: #0F6E56;
+      --verde-claro: #E1F5EE;
+      --verde-hover: #0D5E49;
+      --rojo: #C0392B;
+      --texto: #111;
+      --texto-secundario: #666;
+      --borde: #E0E0E0;
+      --fondo: #F7F8FA;
+      --blanco: #ffffff;
+      --radio: 12px;
+      --radio-lg: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--fondo);
+      color: var(--texto);
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* PANTALLAS */
+    .screen { display: none; min-height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* HEADER */
+    .header {
+      background: var(--verde);
+      padding: 52px 20px 20px;
+      color: white;
+    }
+    .header-top { display: flex; align-items: center; gap: 12px; }
+    .header-icon {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+    .header-back {
+      background: none; border: none; color: white;
+      cursor: pointer; padding: 4px; display: flex; align-items: center;
+      font-size: 22px; margin-right: 4px;
+    }
+
+    /* CONTENIDO */
+    .content { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* FECHA */
+    .fecha-badge {
+      background: var(--blanco);
+      border: 1px solid var(--borde);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--texto-secundario);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+    }
+
+    /* CAMPOS */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--texto-secundario);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 13px 14px;
+      font-size: 16px;
+      font-family: inherit;
+      border: 1.5px solid var(--borde);
+      border-radius: var(--radio);
+      background: var(--blanco);
+      color: var(--texto);
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(15,110,86,0.1);
+    }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+
+    /* RUTA */
+    .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
+    .ruta-flecha {
+      padding-bottom: 13px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--texto-secundario); font-size: 18px;
+    }
+
+    /* CARD SEPARADOR */
+    .card {
+      background: var(--blanco);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio-lg);
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .card-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--verde); text-transform: uppercase; letter-spacing: 0.06em;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* BOTONES */
+    .btn-primary {
+      width: 100%; padding: 15px;
+      background: var(--verde); color: white;
+      border: none; border-radius: var(--radio);
+      font-size: 16px; font-weight: 600; font-family: inherit;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 4px;
+    }
+    .btn-primary:active { background: var(--verde-hover); transform: scale(0.98); }
+    .btn-primary:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      width: 100%; padding: 13px;
+      background: var(--blanco); color: var(--verde);
+      border: 1.5px solid var(--verde); border-radius: var(--radio);
+      font-size: 15px; font-weight: 500; font-family: inherit;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-secondary:active { background: var(--verde-claro); }
+
+    /* HISTORIAL */
+    .viaje-card {
+      background: var(--blanco);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio-lg);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .viaje-ruta {
+      font-size: 15px; font-weight: 600; color: var(--texto);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .viaje-ruta .pin { color: var(--verde); font-size: 15px; }
+    .viaje-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .chip {
+      background: var(--fondo); border: 1px solid var(--borde);
+      border-radius: 20px; padding: 4px 10px;
+      font-size: 12px; color: var(--texto-secundario);
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center; padding: 3rem 1rem;
+      color: var(--texto-secundario); flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    }
+    .empty-icon { font-size: 48px; opacity: 0.3; }
+    .empty p { font-size: 14px; line-height: 1.5; }
+
+    /* BADGE */
+    .badge {
+      background: rgba(255,255,255,0.2);
+      color: white; font-size: 12px; font-weight: 500;
+      padding: 2px 10px; border-radius: 20px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 11px 22px; border-radius: 24px;
+      font-size: 14px; font-weight: 500;
+      color: white; white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 999; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.ok { background: var(--verde); }
+    .toast.error { background: var(--rojo); }
+
+    /* SPINNER */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* INSTRUCCIONES */
+    .instrucciones {
+      background: var(--verde-claro);
+      border-radius: var(--radio);
+      padding: 12px 14px;
+      font-size: 13px; color: var(--verde);
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PANTALLA FORMULARIO -->
+<div id="screen-form" class="screen active">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-icon">🚛</div>
+      <div>
+        <h1>Registrar viaje</h1>
+        <div class="header-sub" id="fecha-display"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card">
+      <div class="card-label">👤 Identificación</div>
+      <div class="field">
+        <label>Conductor</label>
+        <select id="f-conductor">
+          <option value="">Seleccionar conductor...</option>
+          <option>Carlos Méndez</option>
+          <option>Jorge Pérez</option>
+          <option>Luis Rojas</option>
+          <option>Pedro Soto</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Camión / Patente</label>
+        <input type="text" id="f-camion" placeholder="Ej: BBCD-45" autocomplete="off" autocapitalize="characters" inputmode="text">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">📍 Ruta</div>
+      <div class="ruta-row">
+        <div class="field">
+          <label>Origen</label>
+          <input type="text" id="f-origen" placeholder="Ciudad...">
+        </div>
+        <div class="ruta-flecha">→</div>
+        <div class="field">
+          <label>Destino</label>
+          <input type="text" id="f-destino" placeholder="Ciudad...">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-guardar" onclick="guardarViaje()">
+      ✓ &nbsp;Guardar viaje
+    </button>
+    <button class="btn-secondary" onclick="goHistorial()">
+      ☰ &nbsp;Ver viajes registrados
+    </button>
+
+    <div class="instrucciones">
+      <span>💡</span>
+      <span>Cada viaje guardado se envía automáticamente a la planilla de control.</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- PANTALLA HISTORIAL -->
+<div id="screen-historial" class="screen">
+  <div class="header">
+    <div class="header-top">
+      <button class="header-back" onclick="goForm()">←</button>
+      <div style="flex:1">
+        <h1>Viajes registrados <span class="badge" id="badge-count">0</span></h1>
+        <div class="header-sub">Solo muestra viajes de esta sesión</div>
+      </div>
+    </div>
+  </div>
+  <div class="content" id="lista-viajes"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const WEBHOOK = "https://script.google.com/macros/s/AKfycbxZqWXVR9LESIkPryEMztN_Bpzl-rRKsUxsKOgU9U7la15XiYtJmm872X3QoXWwg8Fl/exec";
+  let viajes = [];
+
+  // Fecha
+  const ahora = new Date();
+  const fechaStr = ahora.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('fecha-display').textContent = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  function goForm() { showScreen('screen-form'); }
+  function goHistorial() { renderHistorial(); showScreen('screen-historial'); }
+
+  function showToast(msg, tipo = 'ok') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + tipo;
+    void t.offsetWidth;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  async function guardarViaje() {
+    const conductor = document.getElementById('f-conductor').value;
+    const camion    = document.getElementById('f-camion').value.trim().toUpperCase();
+    const origen    = document.getElementById('f-origen').value.trim();
+    const destino   = document.getElementById('f-destino').value.trim();
+
+    if (!conductor) { showToast('⚠ Selecciona un conductor', 'error'); return; }
+    if (!camion)    { showToast('⚠ Ingresa la patente del camión', 'error'); return; }
+    if (!origen)    { showToast('⚠ Ingresa el origen', 'error'); return; }
+    if (!destino)   { showToast('⚠ Ingresa el destino', 'error'); return; }
+
+    const now = new Date();
+    const payload = {
+      fecha:     now.toLocaleDateString('es-CL'),
+      hora:      now.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+      conductor, camion, origen, destino
+    };
+
+    const btn = document.getElementById('btn-guardar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> &nbsp;Enviando...';
+
+    try {
+      const params = new URLSearchParams(payload);
+      await fetch(WEBHOOK + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
+      viajes.unshift(payload);
+      document.getElementById('f-conductor').value = '';
+      document.getElementById('f-camion').value    = '';
+      document.getElementById('f-origen').value    = '';
+      document.getElementById('f-destino').value   = '';
+      showToast('✓ Viaje guardado en la planilla', 'ok');
+    } catch(err) {
+      showToast('✗ Error de conexión. Intenta de nuevo.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '✓ &nbsp;Guardar viaje';
+    }
+  }
+
+  function renderHistorial() {
+    document.getElementById('badge-count').textContent = viajes.length;
+    const cont = document.getElementById('lista-viajes');
+    if (viajes.length === 0) {
+      cont.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🛣️</div>
+          <p>Aún no hay viajes en esta sesión.<br>Los registros anteriores están en la planilla.</p>
+        </div>`;
+      return;
+    }
+    cont.innerHTML = viajes.map(v => `
+      <div class="viaje-card">
+        <div class="viaje-ruta">
+          <span class="pin">📍</span>
+          ${v.origen} → ${v.destino}
+        </div>
+        <div class="viaje-chips">
+          <span class="chip">👤 ${v.conductor}</span>
+          <span class="chip">🚛 ${v.camion}</span>
+          <span class="chip">🕐 ${v.fecha} ${v.hora}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
+</body>
+</html>
