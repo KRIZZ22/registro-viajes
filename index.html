@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Viajes">
   <meta name="theme-color" content="#0F6E56">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <title>Registro de Viajes</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
     :root {
       --verde: #0F6E56;
       --verde-claro: #E1F5EE;
@@ -23,9 +25,7 @@
       --radio: 12px;
       --radio-lg: 16px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--fondo);
@@ -34,15 +34,9 @@
       max-width: 480px;
       margin: 0 auto;
     }
-
     .screen { display: none; min-height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
-
-    .header {
-      background: var(--verde);
-      padding: 52px 20px 20px;
-      color: white;
-    }
+    .header { background: var(--verde); padding: 52px 20px 20px; color: white; }
     .header-top { display: flex; align-items: center; gap: 12px; }
     .header-icon {
       width: 40px; height: 40px;
@@ -58,126 +52,80 @@
       cursor: pointer; padding: 4px; display: flex; align-items: center;
       font-size: 22px; margin-right: 4px;
     }
-
     .content { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; }
-
     .card {
-      background: var(--blanco);
-      border: 1px solid var(--borde);
-      border-radius: var(--radio-lg);
-      padding: 16px;
+      background: var(--blanco); border: 1px solid var(--borde);
+      border-radius: var(--radio-lg); padding: 16px;
       display: flex; flex-direction: column; gap: 14px;
     }
     .card-label {
-      font-size: 11px; font-weight: 600;
-      color: var(--verde); text-transform: uppercase; letter-spacing: 0.06em;
-      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600; color: var(--verde);
+      text-transform: uppercase; letter-spacing: 0.06em;
     }
-
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label {
-      font-size: 11px; font-weight: 600;
-      color: var(--texto-secundario);
+      font-size: 11px; font-weight: 600; color: var(--texto-secundario);
       text-transform: uppercase; letter-spacing: 0.06em;
     }
     .field select {
-      width: 100%;
-      padding: 13px 40px 13px 14px;
-      font-size: 16px;
-      font-family: inherit;
-      border: 1.5px solid var(--borde);
-      border-radius: var(--radio);
-      background: var(--blanco);
-      color: var(--texto);
+      width: 100%; padding: 13px 40px 13px 14px;
+      font-size: 16px; font-family: inherit;
+      border: 1.5px solid var(--borde); border-radius: var(--radio);
+      background: var(--blanco); color: var(--texto);
       transition: border-color 0.15s;
-      -webkit-appearance: none;
-      appearance: none;
+      -webkit-appearance: none; appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
+      background-repeat: no-repeat; background-position: right 14px center;
     }
-    .field select:focus {
-      outline: none;
-      border-color: var(--verde);
-      box-shadow: 0 0 0 3px rgba(15,110,86,0.1);
-    }
-    .field select.placeholder { color: #aaa; }
-
+    .field select:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(15,110,86,0.1); }
     .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
-    .ruta-flecha {
-      padding-bottom: 13px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--texto-secundario); font-size: 18px;
-    }
-
+    .ruta-flecha { padding-bottom: 13px; display: flex; align-items: center; justify-content: center; color: var(--texto-secundario); font-size: 18px; }
     .btn-primary {
-      width: 100%; padding: 15px;
-      background: var(--verde); color: white;
-      border: none; border-radius: var(--radio);
-      font-size: 16px; font-weight: 600; font-family: inherit;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: background 0.15s, transform 0.1s;
-      margin-top: 4px;
+      width: 100%; padding: 15px; background: var(--verde); color: white;
+      border: none; border-radius: var(--radio); font-size: 16px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s; margin-top: 4px;
     }
     .btn-primary:active { background: var(--verde-hover); transform: scale(0.98); }
     .btn-primary:disabled { background: #aaa; cursor: not-allowed; transform: none; }
-
     .btn-secondary {
-      width: 100%; padding: 13px;
-      background: var(--blanco); color: var(--verde);
+      width: 100%; padding: 13px; background: var(--blanco); color: var(--verde);
       border: 1.5px solid var(--verde); border-radius: var(--radio);
       font-size: 15px; font-weight: 500; font-family: inherit;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-secondary:active { background: var(--verde-claro); }
-
     .viaje-card {
-      background: var(--blanco);
-      border: 1px solid var(--borde);
-      border-radius: var(--radio-lg);
-      padding: 14px 16px;
-      margin-bottom: 10px;
+      background: var(--blanco); border: 1px solid var(--borde);
+      border-radius: var(--radio-lg); padding: 14px 16px; margin-bottom: 10px;
     }
-    .viaje-ruta {
-      font-size: 15px; font-weight: 600; color: var(--texto);
-      display: flex; align-items: center; gap: 8px;
-    }
+    .viaje-ruta { font-size: 15px; font-weight: 600; color: var(--texto); display: flex; align-items: center; gap: 8px; }
     .viaje-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .chip {
       background: var(--fondo); border: 1px solid var(--borde);
       border-radius: 20px; padding: 4px 10px;
       font-size: 12px; color: var(--texto-secundario);
-      display: flex; align-items: center; gap: 4px;
     }
-
     .empty {
-      text-align: center; padding: 3rem 1rem;
-      color: var(--texto-secundario); flex: 1;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+      text-align: center; padding: 3rem 1rem; color: var(--texto-secundario);
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
     }
     .empty-icon { font-size: 48px; opacity: 0.3; }
     .empty p { font-size: 14px; line-height: 1.5; }
-
-    .badge {
-      background: rgba(255,255,255,0.2);
-      color: white; font-size: 12px; font-weight: 500;
-      padding: 2px 10px; border-radius: 20px;
-    }
-
+    .badge { background: rgba(255,255,255,0.2); color: white; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 20px; }
     .toast {
       position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(80px);
       padding: 11px 22px; border-radius: 24px;
-      font-size: 14px; font-weight: 500;
-      color: white; white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      font-size: 14px; font-weight: 500; color: white;
+      white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 999; pointer-events: none;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
     .toast.ok { background: var(--verde); }
     .toast.error { background: var(--rojo); }
-
     .spinner {
       width: 18px; height: 18px;
       border: 2px solid rgba(255,255,255,0.35);
@@ -185,19 +133,47 @@
       animation: spin 0.7s linear infinite; display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .instrucciones {
-      background: var(--verde-claro);
-      border-radius: var(--radio);
-      padding: 12px 14px;
-      font-size: 13px; color: var(--verde);
+      background: var(--verde-claro); border-radius: var(--radio);
+      padding: 12px 14px; font-size: 13px; color: var(--verde);
       display: flex; gap: 8px; align-items: flex-start;
     }
+    /* Banner instalar PWA */
+    #install-banner {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--blanco); border-top: 1px solid var(--borde);
+      padding: 14px 16px; z-index: 100;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      align-items: center; gap: 12px;
+      max-width: 480px; margin: 0 auto;
+    }
+    #install-banner.show { display: flex; }
+    .install-icon { font-size: 28px; }
+    .install-text { flex: 1; }
+    .install-text strong { font-size: 14px; display: block; }
+    .install-text span { font-size: 12px; color: var(--texto-secundario); }
+    .btn-install {
+      background: var(--verde); color: white;
+      border: none; border-radius: 8px;
+      padding: 9px 16px; font-size: 14px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-close-banner {
+      background: none; border: none; color: var(--texto-secundario);
+      font-size: 20px; cursor: pointer; padding: 4px;
+    }
+    .offline-bar {
+      display: none; background: #E67E22; color: white;
+      text-align: center; padding: 6px; font-size: 12px; font-weight: 500;
+    }
+    .offline-bar.show { display: block; }
   </style>
 </head>
 <body>
 
-<!-- PANTALLA FORMULARIO -->
+<div class="offline-bar" id="offline-bar">📵 Sin conexión — el viaje se enviará cuando vuelva la red</div>
+
+<!-- FORMULARIO -->
 <div id="screen-form" class="screen active">
   <div class="header">
     <div class="header-top">
@@ -208,9 +184,7 @@
       </div>
     </div>
   </div>
-
   <div class="content">
-
     <div class="card">
       <div class="card-label">👤 Identificación</div>
       <div class="field">
@@ -233,7 +207,6 @@
         </select>
       </div>
     </div>
-
     <div class="card">
       <div class="card-label">📍 Ruta</div>
       <div class="ruta-row">
@@ -292,23 +265,16 @@
         </div>
       </div>
     </div>
-
-    <button class="btn-primary" id="btn-guardar" onclick="guardarViaje()">
-      ✓ &nbsp;Guardar viaje
-    </button>
-    <button class="btn-secondary" onclick="goHistorial()">
-      ☰ &nbsp;Ver viajes registrados
-    </button>
-
+    <button class="btn-primary" id="btn-guardar" onclick="guardarViaje()">✓ &nbsp;Guardar viaje</button>
+    <button class="btn-secondary" onclick="goHistorial()">☰ &nbsp;Ver viajes registrados</button>
     <div class="instrucciones">
       <span>💡</span>
-      <span>Cada viaje guardado se envía automáticamente a la planilla de control.</span>
+      <span>Cada viaje se envía automáticamente a la planilla de control.</span>
     </div>
-
   </div>
 </div>
 
-<!-- PANTALLA HISTORIAL -->
+<!-- HISTORIAL -->
 <div id="screen-historial" class="screen">
   <div class="header">
     <div class="header-top">
@@ -322,17 +288,65 @@
   <div class="content" id="lista-viajes"></div>
 </div>
 
-<!-- TOAST -->
+<!-- BANNER INSTALACIÓN -->
+<div id="install-banner">
+  <div class="install-icon">🚛</div>
+  <div class="install-text">
+    <strong>Instalar app</strong>
+    <span>Agrégala a tu pantalla de inicio</span>
+  </div>
+  <button class="btn-install" onclick="instalarPWA()">Instalar</button>
+  <button class="btn-close-banner" onclick="cerrarBanner()">✕</button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
   const WEBHOOK = "https://script.google.com/macros/s/AKfycbxZqWXVR9LESIkPryEMztN_Bpzl-rRKsUxsKOgU9U7la15XiYtJmm872X3QoXWwg8Fl/exec";
   let viajes = [];
+  let deferredPrompt = null;
 
+  // Fecha
   const ahora = new Date();
   const fechaStr = ahora.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   document.getElementById('fecha-display').textContent = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
 
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/registro-viajes/sw.js')
+      .then(() => console.log('SW registrado'))
+      .catch(e => console.log('SW error:', e));
+  }
+
+  // Banner de instalación PWA (Android/Chrome)
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('install-banner').classList.add('show');
+  });
+
+  function instalarPWA() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        cerrarBanner();
+      });
+    }
+  }
+  function cerrarBanner() {
+    document.getElementById('install-banner').classList.remove('show');
+  }
+
+  // Estado de conexión
+  function actualizarConexion() {
+    document.getElementById('offline-bar').classList.toggle('show', !navigator.onLine);
+  }
+  window.addEventListener('online', actualizarConexion);
+  window.addEventListener('offline', actualizarConexion);
+  actualizarConexion();
+
+  // Navegación
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -383,7 +397,7 @@
       document.getElementById('f-destino').value   = '';
       showToast('✓ Viaje guardado en la planilla', 'ok');
     } catch(err) {
-      showToast('✗ Error de conexión. Intenta de nuevo.', 'error');
+      showToast('✗ Sin conexión. Intenta de nuevo.', 'error');
     } finally {
       btn.disabled = false;
       btn.innerHTML = '✓ &nbsp;Guardar viaje';
@@ -394,26 +408,18 @@
     document.getElementById('badge-count').textContent = viajes.length;
     const cont = document.getElementById('lista-viajes');
     if (viajes.length === 0) {
-      cont.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">🛣️</div>
-          <p>Aún no hay viajes en esta sesión.<br>Los registros anteriores están en la planilla.</p>
-        </div>`;
+      cont.innerHTML = `<div class="empty"><div class="empty-icon">🛣️</div><p>Aún no hay viajes en esta sesión.<br>Los registros anteriores están en la planilla.</p></div>`;
       return;
     }
     cont.innerHTML = viajes.map(v => `
       <div class="viaje-card">
-        <div class="viaje-ruta">
-          <span>📍</span>
-          ${v.origen} → ${v.destino}
-        </div>
+        <div class="viaje-ruta"><span>📍</span>${v.origen} → ${v.destino}</div>
         <div class="viaje-chips">
           <span class="chip">👤 ${v.conductor}</span>
           <span class="chip">🚛 ${v.camion}</span>
           <span class="chip">🕐 ${v.fecha} ${v.hora}</span>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 </script>
 </body>
