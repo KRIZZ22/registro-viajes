@@ -35,11 +35,9 @@
       margin: 0 auto;
     }
 
-    /* PANTALLAS */
     .screen { display: none; min-height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
 
-    /* HEADER */
     .header {
       background: var(--verde);
       padding: 52px 20px 20px;
@@ -61,65 +59,8 @@
       font-size: 22px; margin-right: 4px;
     }
 
-    /* CONTENIDO */
     .content { flex: 1; padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; }
 
-    /* FECHA */
-    .fecha-badge {
-      background: var(--blanco);
-      border: 1px solid var(--borde);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 13px;
-      color: var(--texto-secundario);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      align-self: flex-start;
-    }
-
-    /* CAMPOS */
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--texto-secundario);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .field input, .field select {
-      width: 100%;
-      padding: 13px 14px;
-      font-size: 16px;
-      font-family: inherit;
-      border: 1.5px solid var(--borde);
-      border-radius: var(--radio);
-      background: var(--blanco);
-      color: var(--texto);
-      transition: border-color 0.15s;
-      -webkit-appearance: none;
-    }
-    .field input:focus, .field select:focus {
-      outline: none;
-      border-color: var(--verde);
-      box-shadow: 0 0 0 3px rgba(15,110,86,0.1);
-    }
-    .field select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 40px;
-    }
-
-    /* RUTA */
-    .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
-    .ruta-flecha {
-      padding-bottom: 13px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--texto-secundario); font-size: 18px;
-    }
-
-    /* CARD SEPARADOR */
     .card {
       background: var(--blanco);
       border: 1px solid var(--borde);
@@ -133,7 +74,42 @@
       display: flex; align-items: center; gap: 6px;
     }
 
-    /* BOTONES */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      font-size: 11px; font-weight: 600;
+      color: var(--texto-secundario);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .field select {
+      width: 100%;
+      padding: 13px 40px 13px 14px;
+      font-size: 16px;
+      font-family: inherit;
+      border: 1.5px solid var(--borde);
+      border-radius: var(--radio);
+      background: var(--blanco);
+      color: var(--texto);
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    .field select:focus {
+      outline: none;
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(15,110,86,0.1);
+    }
+    .field select.placeholder { color: #aaa; }
+
+    .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
+    .ruta-flecha {
+      padding-bottom: 13px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--texto-secundario); font-size: 18px;
+    }
+
     .btn-primary {
       width: 100%; padding: 15px;
       background: var(--verde); color: white;
@@ -155,7 +131,6 @@
     }
     .btn-secondary:active { background: var(--verde-claro); }
 
-    /* HISTORIAL */
     .viaje-card {
       background: var(--blanco);
       border: 1px solid var(--borde);
@@ -167,7 +142,6 @@
       font-size: 15px; font-weight: 600; color: var(--texto);
       display: flex; align-items: center; gap: 8px;
     }
-    .viaje-ruta .pin { color: var(--verde); font-size: 15px; }
     .viaje-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .chip {
       background: var(--fondo); border: 1px solid var(--borde);
@@ -176,7 +150,6 @@
       display: flex; align-items: center; gap: 4px;
     }
 
-    /* EMPTY STATE */
     .empty {
       text-align: center; padding: 3rem 1rem;
       color: var(--texto-secundario); flex: 1;
@@ -185,14 +158,12 @@
     .empty-icon { font-size: 48px; opacity: 0.3; }
     .empty p { font-size: 14px; line-height: 1.5; }
 
-    /* BADGE */
     .badge {
       background: rgba(255,255,255,0.2);
       color: white; font-size: 12px; font-weight: 500;
       padding: 2px 10px; border-radius: 20px;
     }
 
-    /* TOAST */
     .toast {
       position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(80px);
@@ -207,7 +178,6 @@
     .toast.ok { background: var(--verde); }
     .toast.error { background: var(--rojo); }
 
-    /* SPINNER */
     .spinner {
       width: 18px; height: 18px;
       border: 2px solid rgba(255,255,255,0.35);
@@ -216,7 +186,6 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* INSTRUCCIONES */
     .instrucciones {
       background: var(--verde-claro);
       border-radius: var(--radio);
@@ -248,15 +217,20 @@
         <label>Conductor</label>
         <select id="f-conductor">
           <option value="">Seleccionar conductor...</option>
-          <option>Carlos Méndez</option>
-          <option>Jorge Pérez</option>
-          <option>Luis Rojas</option>
-          <option>Pedro Soto</option>
+          <option>Patricio Carathanassis</option>
+          <option>Ricardo Gutierrez Ch.</option>
+          <option>Cesar Diaz</option>
+          <option>Marcos Beltran</option>
         </select>
       </div>
       <div class="field">
         <label>Camión / Patente</label>
-        <input type="text" id="f-camion" placeholder="Ej: BBCD-45" autocomplete="off" autocapitalize="characters" inputmode="text">
+        <select id="f-camion">
+          <option value="">Seleccionar patente...</option>
+          <option>LRBZ-98</option>
+          <option>SVDL-93</option>
+          <option>PSZF-25</option>
+        </select>
       </div>
     </div>
 
@@ -265,12 +239,56 @@
       <div class="ruta-row">
         <div class="field">
           <label>Origen</label>
-          <input type="text" id="f-origen" placeholder="Ciudad...">
+          <select id="f-origen">
+            <option value="">Origen...</option>
+            <option>Ambulancia</option>
+            <option>MELI-Quilicura</option>
+            <option>MELI-Maipu</option>
+            <option>MELI-Rancagua</option>
+            <option>MELI-Los Andes</option>
+            <option>MELI-San Antonio</option>
+            <option>MELI-San Fernando</option>
+            <option>MELI-Talca</option>
+            <option>MELI-Chillan</option>
+            <option>MELI-Concepcion</option>
+            <option>MELI-Los Angeles</option>
+            <option>MELI-Temuco</option>
+            <option>MELI-Valdivia</option>
+            <option>MELI-Osorno</option>
+            <option>MELI-Pto. Montt</option>
+            <option>MELI-La Serena</option>
+            <option>MELI-Copiapo</option>
+            <option>MELI-Antofagasta</option>
+            <option>MELI-Iquique</option>
+            <option>MELI-Arica</option>
+          </select>
         </div>
         <div class="ruta-flecha">→</div>
         <div class="field">
           <label>Destino</label>
-          <input type="text" id="f-destino" placeholder="Ciudad...">
+          <select id="f-destino">
+            <option value="">Destino...</option>
+            <option>Ambulancia</option>
+            <option>MELI-Quilicura</option>
+            <option>MELI-Maipu</option>
+            <option>MELI-Rancagua</option>
+            <option>MELI-Los Andes</option>
+            <option>MELI-San Antonio</option>
+            <option>MELI-San Fernando</option>
+            <option>MELI-Talca</option>
+            <option>MELI-Chillan</option>
+            <option>MELI-Concepcion</option>
+            <option>MELI-Los Angeles</option>
+            <option>MELI-Temuco</option>
+            <option>MELI-Valdivia</option>
+            <option>MELI-Osorno</option>
+            <option>MELI-Pto. Montt</option>
+            <option>MELI-La Serena</option>
+            <option>MELI-Copiapo</option>
+            <option>MELI-Antofagasta</option>
+            <option>MELI-Iquique</option>
+            <option>MELI-Arica</option>
+          </select>
         </div>
       </div>
     </div>
@@ -311,7 +329,6 @@
   const WEBHOOK = "https://script.google.com/macros/s/AKfycbxZqWXVR9LESIkPryEMztN_Bpzl-rRKsUxsKOgU9U7la15XiYtJmm872X3QoXWwg8Fl/exec";
   let viajes = [];
 
-  // Fecha
   const ahora = new Date();
   const fechaStr = ahora.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   document.getElementById('fecha-display').textContent = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
@@ -335,14 +352,15 @@
 
   async function guardarViaje() {
     const conductor = document.getElementById('f-conductor').value;
-    const camion    = document.getElementById('f-camion').value.trim().toUpperCase();
-    const origen    = document.getElementById('f-origen').value.trim();
-    const destino   = document.getElementById('f-destino').value.trim();
+    const camion    = document.getElementById('f-camion').value;
+    const origen    = document.getElementById('f-origen').value;
+    const destino   = document.getElementById('f-destino').value;
 
     if (!conductor) { showToast('⚠ Selecciona un conductor', 'error'); return; }
-    if (!camion)    { showToast('⚠ Ingresa la patente del camión', 'error'); return; }
-    if (!origen)    { showToast('⚠ Ingresa el origen', 'error'); return; }
-    if (!destino)   { showToast('⚠ Ingresa el destino', 'error'); return; }
+    if (!camion)    { showToast('⚠ Selecciona la patente del camión', 'error'); return; }
+    if (!origen)    { showToast('⚠ Selecciona el origen', 'error'); return; }
+    if (!destino)   { showToast('⚠ Selecciona el destino', 'error'); return; }
+    if (origen === destino) { showToast('⚠ Origen y destino no pueden ser iguales', 'error'); return; }
 
     const now = new Date();
     const payload = {
@@ -386,7 +404,7 @@
     cont.innerHTML = viajes.map(v => `
       <div class="viaje-card">
         <div class="viaje-ruta">
-          <span class="pin">📍</span>
+          <span>📍</span>
           ${v.origen} → ${v.destino}
         </div>
         <div class="viaje-chips">
