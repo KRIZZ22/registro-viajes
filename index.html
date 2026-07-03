@@ -332,8 +332,29 @@
   // Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/registro-viajes/sw.js')
-      .then(() => console.log('SW registrado'))
+      .then(reg => {
+        console.log('SW registrado');
+
+        // Revisar si hay una actualización disponible cada vez que se abre la app
+        reg.update();
+
+        // Revisar periódicamente mientras la app está abierta (cada 30 min)
+        setInterval(() => reg.update(), 30 * 60 * 1000);
+
+        // También revisar cuando el usuario vuelve a la app (viene de background)
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') reg.update();
+        });
+      })
       .catch(e => console.log('SW error:', e));
+
+    // Cuando el nuevo Service Worker toma el control, recargar automáticamente
+    let recargando = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (recargando) return;
+      recargando = true;
+      window.location.reload();
+    });
   }
 
   // Banner de instalación PWA (Android/Chrome)
