@@ -1,8 +1,11 @@
-const CACHE = 'viajes-v2';
+const CACHE = 'viajes-v3';
 const ASSETS = [
   '/registro-viajes/',
   '/registro-viajes/index.html',
-  '/registro-viajes/manifest.json'
+  '/registro-viajes/manifest.json',
+  '/registro-viajes/logo-header.png',
+  '/registro-viajes/icon-192.png',
+  '/registro-viajes/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
