@@ -78,6 +78,14 @@
       background-repeat: no-repeat; background-position: right 14px center;
     }
     .field select:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(15,110,86,0.1); }
+    .field input[type="text"] {
+      width: 100%; padding: 13px 14px;
+      font-size: 16px; font-family: inherit;
+      border: 1.5px solid var(--borde); border-radius: var(--radio);
+      background: var(--blanco); color: var(--texto);
+      transition: border-color 0.15s;
+    }
+    .field input[type="text"]:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(15,110,86,0.1); }
     .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
     .ruta-flecha { padding-bottom: 13px; display: flex; align-items: center; justify-content: center; color: var(--texto-secundario); font-size: 18px; }
     .btn-primary {
@@ -234,6 +242,7 @@
             <option>MELI-Antofagasta</option>
             <option>MELI-Iquique</option>
             <option>MELI-Arica</option>
+            <option value="__nuevo__">➕ Otra ubicación (no está en la lista)</option>
           </select>
         </div>
         <div class="ruta-flecha">→</div>
@@ -261,8 +270,17 @@
             <option>MELI-Antofagasta</option>
             <option>MELI-Iquique</option>
             <option>MELI-Arica</option>
+            <option value="__nuevo__">➕ Otra ubicación (no está en la lista)</option>
           </select>
         </div>
+      </div>
+      <div class="field" id="origen-custom-wrap" style="display:none;">
+        <label>Nueva ubicación (Origen)</label>
+        <input type="text" id="f-origen-custom" placeholder="Escribe el nombre del lugar">
+      </div>
+      <div class="field" id="destino-custom-wrap" style="display:none;">
+        <label>Nueva ubicación (Destino)</label>
+        <input type="text" id="f-destino-custom" placeholder="Escribe el nombre del lugar">
       </div>
     </div>
     <button class="btn-primary" id="btn-guardar" onclick="guardarViaje()">✓ &nbsp;Guardar viaje</button>
@@ -346,6 +364,21 @@
   window.addEventListener('offline', actualizarConexion);
   actualizarConexion();
 
+  // Mostrar/ocultar campo de nueva ubicación
+  function toggleCustomField(selectId, wrapId, inputId) {
+    const sel = document.getElementById(selectId);
+    const wrap = document.getElementById(wrapId);
+    if (sel.value === '__nuevo__') {
+      wrap.style.display = 'flex';
+      document.getElementById(inputId).focus();
+    } else {
+      wrap.style.display = 'none';
+      document.getElementById(inputId).value = '';
+    }
+  }
+  document.getElementById('f-origen').addEventListener('change', () => toggleCustomField('f-origen', 'origen-custom-wrap', 'f-origen-custom'));
+  document.getElementById('f-destino').addEventListener('change', () => toggleCustomField('f-destino', 'destino-custom-wrap', 'f-destino-custom'));
+
   // Navegación
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -367,13 +400,25 @@
   async function guardarViaje() {
     const conductor = document.getElementById('f-conductor').value;
     const camion    = document.getElementById('f-camion').value;
-    const origen    = document.getElementById('f-origen').value;
-    const destino   = document.getElementById('f-destino').value;
+    let origen      = document.getElementById('f-origen').value;
+    let destino     = document.getElementById('f-destino').value;
 
     if (!conductor) { showToast('⚠ Selecciona un conductor', 'error'); return; }
     if (!camion)    { showToast('⚠ Selecciona la patente del camión', 'error'); return; }
     if (!origen)    { showToast('⚠ Selecciona el origen', 'error'); return; }
     if (!destino)   { showToast('⚠ Selecciona el destino', 'error'); return; }
+
+    // Resolver ubicaciones nuevas escritas a mano
+    if (origen === '__nuevo__') {
+      const nuevoOrigen = document.getElementById('f-origen-custom').value.trim();
+      if (!nuevoOrigen) { showToast('⚠ Escribe el nombre del nuevo origen', 'error'); return; }
+      origen = '🆕 ' + nuevoOrigen;
+    }
+    if (destino === '__nuevo__') {
+      const nuevoDestino = document.getElementById('f-destino-custom').value.trim();
+      if (!nuevoDestino) { showToast('⚠ Escribe el nombre del nuevo destino', 'error'); return; }
+      destino = '🆕 ' + nuevoDestino;
+    }
     if (origen === destino) { showToast('⚠ Origen y destino no pueden ser iguales', 'error'); return; }
 
     const now = new Date();
@@ -395,6 +440,10 @@
       document.getElementById('f-camion').value    = '';
       document.getElementById('f-origen').value    = '';
       document.getElementById('f-destino').value   = '';
+      document.getElementById('f-origen-custom').value  = '';
+      document.getElementById('f-destino-custom').value = '';
+      document.getElementById('origen-custom-wrap').style.display  = 'none';
+      document.getElementById('destino-custom-wrap').style.display = 'none';
       showToast('✓ Viaje guardado en la planilla', 'ok');
     } catch(err) {
       showToast('✗ Sin conexión. Intenta de nuevo.', 'error');
