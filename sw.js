@@ -1,9 +1,9 @@
-const CACHE = 'viajes-v4';
+const CACHE = 'viajes-v5';
 const ASSETS = [
   '/registro-viajes/',
   '/registro-viajes/index.html',
   '/registro-viajes/manifest.json',
-  '/registro-viajes/logo-header.png',
+  '/registro-viajes/logo-header-completo.png',
   '/registro-viajes/icon-192.png',
   '/registro-viajes/icon-512.png'
 ];
