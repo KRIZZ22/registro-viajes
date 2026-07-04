@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Viajes">
-  <meta name="theme-color" content="#0F6E56">
+  <meta name="apple-mobile-web-app-title" content="Carval">
+  <meta name="theme-color" content="#064D89">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Registro de Viajes</title>
+  <title>Transportes Carval - Registro de Viajes</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
     :root {
-      --verde: #0F6E56;
-      --verde-claro: #E1F5EE;
-      --verde-hover: #0D5E49;
+      --azul: #064D89;
+      --azul-claro: #E5EEF6;
+      --azul-hover: #053D6E;
+      --amarillo: #F6A421;
+      --amarillo-oscuro: #C97F0E;
       --rojo: #C0392B;
       --texto: #111;
       --texto-secundario: #666;
@@ -36,7 +38,7 @@
     }
     .screen { display: none; min-height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
-    .header { background: var(--verde); padding: 52px 20px 20px; color: white; }
+    .header { background: var(--azul); padding: 52px 20px 20px; color: white; }
     .header-top { display: flex; align-items: center; gap: 12px; }
     .header-icon {
       width: 44px; height: 44px;
@@ -60,7 +62,7 @@
       display: flex; flex-direction: column; gap: 14px;
     }
     .card-label {
-      font-size: 11px; font-weight: 600; color: var(--verde);
+      font-size: 11px; font-weight: 600; color: var(--azul);
       text-transform: uppercase; letter-spacing: 0.06em;
     }
     .field { display: flex; flex-direction: column; gap: 6px; }
@@ -78,7 +80,7 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 14px center;
     }
-    .field select:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(15,110,86,0.1); }
+    .field select:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(6,77,137,0.1); }
     .field input[type="text"] {
       width: 100%; padding: 13px 14px;
       font-size: 16px; font-family: inherit;
@@ -86,25 +88,25 @@
       background: var(--blanco); color: var(--texto);
       transition: border-color 0.15s;
     }
-    .field input[type="text"]:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(15,110,86,0.1); }
+    .field input[type="text"]:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(6,77,137,0.1); }
     .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
     .ruta-flecha { padding-bottom: 13px; display: flex; align-items: center; justify-content: center; color: var(--texto-secundario); font-size: 18px; }
     .btn-primary {
-      width: 100%; padding: 15px; background: var(--verde); color: white;
+      width: 100%; padding: 15px; background: var(--azul); color: white;
       border: none; border-radius: var(--radio); font-size: 16px; font-weight: 600;
       font-family: inherit; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background 0.15s, transform 0.1s; margin-top: 4px;
     }
-    .btn-primary:active { background: var(--verde-hover); transform: scale(0.98); }
+    .btn-primary:active { background: var(--azul-hover); transform: scale(0.98); }
     .btn-primary:disabled { background: #aaa; cursor: not-allowed; transform: none; }
     .btn-secondary {
-      width: 100%; padding: 13px; background: var(--blanco); color: var(--verde);
-      border: 1.5px solid var(--verde); border-radius: var(--radio);
+      width: 100%; padding: 13px; background: var(--blanco); color: var(--azul);
+      border: 1.5px solid var(--azul); border-radius: var(--radio);
       font-size: 15px; font-weight: 500; font-family: inherit;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-secondary:active { background: var(--verde-claro); }
+    .btn-secondary:active { background: var(--azul-claro); }
     .viaje-card {
       background: var(--blanco); border: 1px solid var(--borde);
       border-radius: var(--radio-lg); padding: 14px 16px; margin-bottom: 10px;
@@ -122,7 +124,7 @@
     }
     .empty-icon { font-size: 48px; opacity: 0.3; }
     .empty p { font-size: 14px; line-height: 1.5; }
-    .badge { background: rgba(255,255,255,0.2); color: white; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 20px; }
+    .badge { background: var(--amarillo); color: var(--azul-hover); font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
     .toast {
       position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(80px);
@@ -133,7 +135,7 @@
       z-index: 999; pointer-events: none;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast.ok { background: var(--verde); }
+    .toast.ok { background: var(--azul); }
     .toast.error { background: var(--rojo); }
     .spinner {
       width: 18px; height: 18px;
@@ -143,8 +145,8 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .instrucciones {
-      background: var(--verde-claro); border-radius: var(--radio);
-      padding: 12px 14px; font-size: 13px; color: var(--verde);
+      background: var(--azul-claro); border-radius: var(--radio);
+      padding: 12px 14px; font-size: 13px; color: var(--azul);
       display: flex; gap: 8px; align-items: flex-start;
     }
     /* Banner instalar PWA */
@@ -162,7 +164,7 @@
     .install-text strong { font-size: 14px; display: block; }
     .install-text span { font-size: 12px; color: var(--texto-secundario); }
     .btn-install {
-      background: var(--verde); color: white;
+      background: var(--azul); color: white;
       border: none; border-radius: 8px;
       padding: 9px 16px; font-size: 14px; font-weight: 600;
       cursor: pointer; white-space: nowrap;
