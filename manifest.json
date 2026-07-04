@@ -1,11 +1,11 @@
 {
-  "name": "Registro de Viajes",
-  "short_name": "Viajes",
-  "description": "App para registrar viajes de camión",
+  "name": "Transportes Carval",
+  "short_name": "Carval",
+  "description": "App para registrar viajes de camión - Transportes Carval",
   "start_url": "/registro-viajes/",
   "display": "standalone",
-  "background_color": "#0F6E56",
-  "theme_color": "#0F6E56",
+  "background_color": "#064D89",
+  "theme_color": "#064D89",
   "orientation": "portrait",
   "icons": [
     {
