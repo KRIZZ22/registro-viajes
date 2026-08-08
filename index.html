@@ -367,11 +367,16 @@
   }
   function renderLogin() {
     const cont = document.getElementById('lista-conductores');
-    cont.innerHTML = CONDUCTORES.map(n => `
-      <button class="driver-btn" onclick="elegirConductor(${JSON.stringify(n)})">
+    cont.innerHTML = CONDUCTORES.map((n, idx) => `
+      <button class="driver-btn" data-idx="${idx}">
         <span class="driver-avatar">${iniciales(n)}</span>
         <span>${n}</span>
       </button>`).join('');
+    cont.querySelectorAll('.driver-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        elegirConductor(CONDUCTORES[Number(btn.dataset.idx)]);
+      });
+    });
   }
   function elegirConductor(nombre) {
     conductorActual = nombre;
