@@ -81,14 +81,14 @@
       background-repeat: no-repeat; background-position: right 14px center;
     }
     .field select:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(6,77,137,0.1); }
-    .field input[type="text"] {
+    .field input[type="text"], .field input[type="month"] {
       width: 100%; padding: 13px 14px;
       font-size: 16px; font-family: inherit;
       border: 1.5px solid var(--borde); border-radius: var(--radio);
       background: var(--blanco); color: var(--texto);
       transition: border-color 0.15s;
     }
-    .field input[type="text"]:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(6,77,137,0.1); }
+    .field input[type="text"]:focus, .field input[type="month"]:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(6,77,137,0.1); }
     .ruta-row { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: end; }
     .ruta-flecha { padding-bottom: 13px; display: flex; align-items: center; justify-content: center; color: var(--texto-secundario); font-size: 18px; }
     .btn-primary {
@@ -178,37 +178,60 @@
       text-align: center; padding: 6px; font-size: 12px; font-weight: 500;
     }
     .offline-bar.show { display: block; }
+    .driver-btn {
+      width: 100%; display: flex; align-items: center; gap: 12px;
+      background: var(--blanco); border: 1.5px solid var(--borde); border-radius: var(--radio-lg);
+      padding: 14px 16px; font-size: 15px; font-weight: 600; color: var(--texto);
+      font-family: inherit; cursor: pointer; text-align: left;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .driver-btn:active { background: var(--azul-claro); border-color: var(--azul); }
+    .driver-avatar {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: var(--azul); color: white; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-cambiar {
+      background: rgba(255,255,255,0.15); border: none; color: white;
+      border-radius: 8px; padding: 8px 10px; font-size: 16px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
   </style>
 </head>
 <body>
 
 <div class="offline-bar" id="offline-bar">📵 Sin conexión — el viaje se enviará cuando vuelva la red</div>
 
+<!-- LOGIN -->
+<div id="screen-login" class="screen active">
+  <div class="header" style="padding-bottom:28px;">
+    <div class="header-top" style="flex-direction:column; text-align:center; gap:10px;">
+      <div class="header-icon" style="width:72px;height:72px;"><img src="logo-header-completo.png" alt="Transportes Carval"></div>
+      <div>
+        <h1>Transportes Carval</h1>
+        <div class="header-sub">Selecciona tu nombre para continuar</div>
+      </div>
+    </div>
+  </div>
+  <div class="content" id="lista-conductores"></div>
+</div>
+
 <!-- FORMULARIO -->
-<div id="screen-form" class="screen active">
+<div id="screen-form" class="screen">
   <div class="header">
     <div class="header-top">
       <div class="header-icon"><img src="logo-header-completo.png" alt="Transportes Carval"></div>
-      <div>
-        <h1>Registrar viaje</h1>
+      <div style="flex:1">
+        <h1 id="saludo-conductor">Registrar viaje</h1>
         <div class="header-sub" id="fecha-display"></div>
       </div>
+      <button class="btn-cambiar" title="Cambiar conductor" onclick="goLogin()">🔄</button>
     </div>
   </div>
   <div class="content">
     <div class="card">
-      <div class="card-label">👤 Identificación</div>
-      <div class="field">
-        <label>Conductor</label>
-        <select id="f-conductor">
-          <option value="">Seleccionar conductor...</option>
-          <option>Patricio Carathanassis</option>
-          <option>Ricardo Gutierrez Ch.</option>
-          <option>Cesar Diaz</option>
-          <option>Marcos Beltran</option>
-          <option>Christian Recabarren</option>
-        </select>
-      </div>
+      <div class="card-label">🚛 Vehículo</div>
       <div class="field">
         <label>Camión / Patente</label>
         <select id="f-camion">
@@ -302,12 +325,21 @@
     <div class="header-top">
       <button class="header-back" onclick="goForm()">←</button>
       <div style="flex:1">
-        <h1>Viajes registrados <span class="badge" id="badge-count">0</span></h1>
-        <div class="header-sub">Solo muestra viajes de esta sesión</div>
+        <h1>Mis viajes <span class="badge" id="badge-count">0</span></h1>
+        <div class="header-sub" id="historial-conductor-label"></div>
       </div>
     </div>
   </div>
-  <div class="content" id="lista-viajes"></div>
+  <div class="content">
+    <div class="card" style="flex-direction:row; align-items:end; gap:10px;">
+      <div class="field" style="flex:1">
+        <label>Mes a consultar</label>
+        <input type="month" id="f-mes-historial" onchange="cargarHistorial()">
+      </div>
+      <button class="btn-primary" style="width:auto; margin-top:0; padding:13px 16px;" onclick="cargarHistorial()">🔍</button>
+    </div>
+    <div id="lista-viajes"></div>
+  </div>
 </div>
 
 <!-- BANNER INSTALACIÓN -->
@@ -325,8 +357,32 @@
 
 <script>
   const WEBHOOK = "https://script.google.com/macros/s/AKfycbxZqWXVR9LESIkPryEMztN_Bpzl-rRKsUxsKOgU9U7la15XiYtJmm872X3QoXWwg8Fl/exec";
-  let viajes = [];
+  const CONDUCTORES = ["Patricio Carathanassis", "Ricardo Gutierrez Ch.", "Cesar Diaz", "Marcos Beltran", "Christian Recabarren"];
+  let conductorActual = null;
   let deferredPrompt = null;
+
+  // Pantalla de login: generar botones de conductores
+  function iniciales(nombre) {
+    return nombre.split(' ').filter(Boolean).map(p => p[0]).slice(0, 2).join('').toUpperCase();
+  }
+  function renderLogin() {
+    const cont = document.getElementById('lista-conductores');
+    cont.innerHTML = CONDUCTORES.map(n => `
+      <button class="driver-btn" onclick="elegirConductor(${JSON.stringify(n)})">
+        <span class="driver-avatar">${iniciales(n)}</span>
+        <span>${n}</span>
+      </button>`).join('');
+  }
+  function elegirConductor(nombre) {
+    conductorActual = nombre;
+    document.getElementById('saludo-conductor').textContent = 'Hola, ' + nombre.split(' ')[0];
+    showScreen('screen-form');
+  }
+  function goLogin() {
+    conductorActual = null;
+    showScreen('screen-login');
+  }
+  renderLogin();
 
   // Fecha
   const ahora = new Date();
@@ -411,7 +467,16 @@
     window.scrollTo(0, 0);
   }
   function goForm() { showScreen('screen-form'); }
-  function goHistorial() { renderHistorial(); showScreen('screen-historial'); }
+  function goHistorial() {
+    document.getElementById('historial-conductor-label').textContent = conductorActual;
+    const inputMes = document.getElementById('f-mes-historial');
+    if (!inputMes.value) {
+      const hoy = new Date();
+      inputMes.value = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+    }
+    showScreen('screen-historial');
+    cargarHistorial();
+  }
 
   function showToast(msg, tipo = 'ok') {
     const t = document.getElementById('toast');
@@ -423,12 +488,12 @@
   }
 
   async function guardarViaje() {
-    const conductor = document.getElementById('f-conductor').value;
+    const conductor = conductorActual;
     const camion    = document.getElementById('f-camion').value;
     let origen      = document.getElementById('f-origen').value;
     let destino     = document.getElementById('f-destino').value;
 
-    if (!conductor) { showToast('⚠ Selecciona un conductor', 'error'); return; }
+    if (!conductor) { showToast('⚠ Debes identificarte primero', 'error'); goLogin(); return; }
     if (!camion)    { showToast('⚠ Selecciona la patente del camión', 'error'); return; }
     if (!origen)    { showToast('⚠ Selecciona el origen', 'error'); return; }
     if (!destino)   { showToast('⚠ Selecciona el destino', 'error'); return; }
@@ -460,8 +525,6 @@
     try {
       const params = new URLSearchParams(payload);
       await fetch(WEBHOOK + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
-      viajes.unshift(payload);
-      document.getElementById('f-conductor').value = '';
       document.getElementById('f-camion').value    = '';
       document.getElementById('f-origen').value    = '';
       document.getElementById('f-destino').value   = '';
@@ -478,18 +541,39 @@
     }
   }
 
-  function renderHistorial() {
-    document.getElementById('badge-count').textContent = viajes.length;
+  let viajesHistorial = [];
+
+  async function cargarHistorial() {
     const cont = document.getElementById('lista-viajes');
-    if (viajes.length === 0) {
-      cont.innerHTML = `<div class="empty"><div class="empty-icon">🛣️</div><p>Aún no hay viajes en esta sesión.<br>Los registros anteriores están en la planilla.</p></div>`;
+    const valorMes = document.getElementById('f-mes-historial').value; // formato "2026-08"
+    if (!valorMes) { showToast('⚠ Selecciona un mes', 'error'); return; }
+    const [anio, mes] = valorMes.split('-');
+
+    cont.innerHTML = `<div class="empty"><span class="spinner" style="border-top-color:var(--azul); border-color:rgba(6,77,137,0.2); width:26px; height:26px;"></span><p style="margin-top:12px;">Cargando viajes...</p></div>`;
+
+    try {
+      const params = new URLSearchParams({ accion: 'historial', conductor: conductorActual, mes, anio });
+      const resp = await fetch(WEBHOOK + '?' + params.toString());
+      const data = await resp.json();
+      viajesHistorial = data.viajes || [];
+      renderHistorial();
+    } catch (err) {
+      cont.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><p>No se pudo cargar el historial.<br>Revisa tu conexión e intenta de nuevo.</p></div>`;
+      document.getElementById('badge-count').textContent = '0';
+    }
+  }
+
+  function renderHistorial() {
+    document.getElementById('badge-count').textContent = viajesHistorial.length;
+    const cont = document.getElementById('lista-viajes');
+    if (viajesHistorial.length === 0) {
+      cont.innerHTML = `<div class="empty"><div class="empty-icon">🛣️</div><p>No hay viajes registrados<br>en el mes seleccionado.</p></div>`;
       return;
     }
-    cont.innerHTML = viajes.map(v => `
+    cont.innerHTML = viajesHistorial.map(v => `
       <div class="viaje-card">
         <div class="viaje-ruta"><span>📍</span>${v.origen} → ${v.destino}</div>
         <div class="viaje-chips">
-          <span class="chip">👤 ${v.conductor}</span>
           <span class="chip">🚛 ${v.camion}</span>
           <span class="chip">🕐 ${v.fecha} ${v.hora}</span>
         </div>
