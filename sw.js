@@ -1,4 +1,4 @@
-const CACHE = 'viajes-v11';
+const CACHE = 'viajes-v12';
 const ASSETS = [
   '/registro-viajes/',
   '/registro-viajes/index.html',
